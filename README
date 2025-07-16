@@ -1,0 +1,84 @@
+# Medical Assessment App
+
+A modern healthcare and medical assessments platform built with Next.js, React, Redux Toolkit, and Material UI.
+
+## Features
+
+- Next.js 15 app directory structure
+- Redux Toolkit for state management
+- RTK Query for API calls
+- Material UI theming ([src/theme/theme.ts](src/theme/theme.ts))
+- Authentication flow with cookie-based token ([src/middleware.ts](src/middleware.ts))
+- Responsive design with custom CSS ([src/app/globals.css](src/app/globals.css), [src/app/page.module.css](src/app/page.module.css))
+- Commitlint, ESLint, Prettier, and Husky for code quality
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### Installation
+
+```sh
+npm install
+```
+
+### Development
+
+```sh
+npm run dev
+```
+
+### Build
+
+```sh
+npm run build
+```
+
+### Start Production Server
+
+```sh
+npm start
+```
+
+## Project Structure
+
+- [`src/app`](src/app) - Next.js app directory (pages, layouts, styles)
+- [`src/components`](src/components) - Shared React components
+- [`src/store`](src/store) - Redux store and API slice ([src/store/store.ts](src/store/store.ts), [`src/store/apiSlice.ts`](src/store/apiSlice.ts))
+- [`src/theme`](src/theme) - Material UI theme ([src/theme/theme.ts](src/theme/theme.ts))
+- [`public`](public) - Static assets
+
+## Code Quality
+
+- Lint: `npm run lint`
+- Pre-commit hooks: Husky + lint-staged
+- Commit message linting: Commitlint
+
+## Environment Variables
+
+Set your API URL in `.env.local`:
+
+```
+NEXT_PUBLIC_API_URL=https://your-api-url.com
+```
+
+## Authentication
+
+- Token is stored in cookies (`token`)
+- Middleware in [`src/middleware.ts`](src/middleware.ts) protects routes
+
+## License
+
+MIT
+
+---
+
+For more details, see the source files:
+
+- [`src/app/page.tsx`](src/app/page.tsx)
+- [`src/store/apiSlice.ts`](src/store/apiSlice.ts)
+- [`src/middleware.ts`](src/middleware.ts)
+-
