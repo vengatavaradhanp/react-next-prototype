@@ -18,13 +18,13 @@ export function middleware(request: NextRequest) {
   //   return NextResponse.redirect(new URL('/home', request.nextUrl));
   // }
 
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL('/dashboard', request.nextUrl));
-  }
+  // if (isPublicPath && token) {
+  //   return NextResponse.redirect(new URL('/dashboard', request.nextUrl));
+  // }
 
-  if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL('/auth/signin', request.nextUrl));
-  }
+  // if (!isPublicPath && !token) {
+  //   return NextResponse.redirect(new URL('/auth/signin', request.nextUrl));
+  // }
 }
 
 export const config = {
