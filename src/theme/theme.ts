@@ -19,7 +19,35 @@ const theme = createTheme({
     MuiInputBase: {
       styleOverrides: {
         root: {
-          fontFamily: 'var(--font-inter), sans-serif',
+          fontFamily: 'var(--font-inter), sans-serif'
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: '#000',
+        },
+      },
+    },
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          color: '#000', // Default color for the Tabs container (not individual tabs)
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          color: '#888', // Inactive tab color
+          '&.Mui-selected': {
+            color: '#1976d2', // Active tab color
+            fontWeight: 500, // Bold text for active tab
+          },
+          '&.Mui-disabled': {
+            color: '#ccc', // Disabled tab color
+          },
         },
       },
     },

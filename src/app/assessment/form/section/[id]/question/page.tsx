@@ -180,8 +180,23 @@ export default function AssessmentQuestion() {
                 <Button
                     startIcon={<AddIcon />}
                     onClick={handleAddOption}
-                    // variant="outlined"
+                    variant="outlined"
                     size='large'
+                    sx={{
+                        // background: 'linear-gradient(90deg, #408bff 0%, #3a7de6 100%)',
+                        textTransform: 'none',
+                        letterSpacing: '0.5px',
+                        fontWeight: 500,
+                        fontFamily: 'var(--font-inter), sans-serif',
+                        borderRadius: '4px',
+                        padding: '8px 24px',
+                        // boxShadow: '0 2px 8px rgba(64, 139, 255, 0.25)',
+                        // border: 'none',
+                        // '&:hover': {
+                        //     background: 'linear-gradient(90deg, #3a7de6 0%, #3670cc 100%)',
+                        //     boxShadow: '0 4px 12px rgba(64, 139, 255, 0.3)',
+                        // }
+                    }}
 
                 >
                     Add Option
@@ -263,7 +278,8 @@ export default function AssessmentQuestion() {
                             setOptions(newOptions);
                         }}
                     />
-                    <IconButton onClick={() => handleRemoveOption(index)} color="error">
+                    <IconButton onClick={() => handleRemoveOption(index)} color="error"
+                    >
                         <DeleteIcon />
                     </IconButton>
                 </Box>
@@ -284,8 +300,23 @@ export default function AssessmentQuestion() {
                 <Button
                     startIcon={<AddIcon />}
                     onClick={handleAddLogic}
-                    // variant="outlined"
+                    variant="outlined"
                     size='large'
+                    sx={{
+                        // background: 'linear-gradient(90deg, #408bff 0%, #3a7de6 100%)',
+                        textTransform: 'none',
+                        letterSpacing: '0.5px',
+                        fontWeight: 500,
+                        fontFamily: 'var(--font-inter), sans-serif',
+                        borderRadius: '4px',
+                        padding: '8px 24px',
+                        // boxShadow: '0 2px 8px rgba(64, 139, 255, 0.25)',
+                        // border: 'none',
+                        // '&:hover': {
+                        //     background: 'linear-gradient(90deg, #3a7de6 0%, #3670cc 100%)',
+                        //     boxShadow: '0 4px 12px rgba(64, 139, 255, 0.3)',
+                        // }
+                    }}
                 >
                     Add Logic
                 </Button>
@@ -358,7 +389,7 @@ export default function AssessmentQuestion() {
                             setConditionalLogics(newLogics);
                         }}
                     />
-                    <FormControl sx={{ minWidth: 120 }}>
+                    <FormControl sx={{ minWidth: 200 }}>
                         <InputLabel>Operator</InputLabel>
                         <Select
                             value={logic.operator}
@@ -385,7 +416,7 @@ export default function AssessmentQuestion() {
                             setConditionalLogics(newLogics);
                         }}
                     />
-                    <FormControl sx={{ minWidth: 120 }}>
+                    <FormControl sx={{ minWidth: 200 }}>
                         <InputLabel>Action</InputLabel>
                         <Select
                             value={logic.action}

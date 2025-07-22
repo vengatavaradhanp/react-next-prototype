@@ -1,7 +1,6 @@
 "use client";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ReduxProvider } from "../store/provider";
 import ThemeRegistry from "@/components/ThemeRegistry";
 import React, { ReactNode, useState } from 'react';
 import {
@@ -21,12 +20,10 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-
 import AppHeader from "@/components/AppHeader";
 import AppDrawer from "@/components/AppDrawer";
-
+import { store } from "@/store/store";
+import { Provider } from "react-redux";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,30 +35,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// export const metadata = {
-//   title: 'Medical Assessment App',
-//   description: 'Healthcare and medical assessments platform',
-// };
+const ReduxProvider = ({ children }: { children: React.ReactNode }) => (
+  <Provider store={store}>{children}</Provider>
+);
 
-const drawerWidth = 260;
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [open, setOpen] = useState(true);
-  const theme = useTheme();
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   return (
+
     <html lang="en">
       <body className={`${inter.variable} ${geistMono.variable}`}>
         <ThemeRegistry >

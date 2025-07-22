@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from 'react';
-import { Box, Button, Typography, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Grid } from '@mui/material';
+import { Box, Button, Typography, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Grid, InputLabel, FormControl } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
@@ -31,6 +31,9 @@ const statusStyles: any = {
 };
 
 const Assessments = () => {
+    const [status, setStatus] = React.useState('');
+    const [allTime, setAllTime] = React.useState('');
+    const [sortOrder, setSortOrder] = React.useState('');
     const router = useRouter();
     return (
         <Box>
@@ -41,29 +44,76 @@ const Assessments = () => {
                         View and manage all assessments for City General Hospital
                     </Typography>
                 </Box>
-                <Button onClick={() => router.push('/assessment/form')} variant="contained" sx={{ backgroundColor: '#408bff', textTransform: 'none', letterSpacing: '0.5px', fontWeight: 500, fontFamily: 'var(--font-inter), sans-serif', borderRadius: '4px', padding: '8px 20px', boxShadow: 'none', border: '1px solid #408bff' }} size='large' disableRipple><AddOutlined /> &nbsp; New Assessment</Button>
+                <Button
+                    onClick={() => router.push('/assessment/form')}
+                    variant="contained"
+                    size='large'
+                    sx={{
+                        background: 'linear-gradient(90deg, #408bff 0%, #3a7de6 100%)',
+                        textTransform: 'none',
+                        letterSpacing: '0.5px',
+                        fontWeight: 500,
+                        fontFamily: 'var(--font-inter), sans-serif',
+                        borderRadius: '4px',
+                        padding: '8px 24px',
+                        boxShadow: '0 2px 8px rgba(64, 139, 255, 0.25)',
+                        border: 'none',
+                        '&:hover': {
+                            background: 'linear-gradient(90deg, #3a7de6 0%, #3670cc 100%)',
+                            boxShadow: '0 4px 12px rgba(64, 139, 255, 0.3)',
+                        }
+                    }}
+                >
+                    <AddOutlined /> &nbsp; New Assessment
+                </Button>
             </Box>
 
             <Box sx={{ border: '1px solid #e4e5e7', borderRadius: '10px', padding: 3, backgroundColor: '#fff' }}>
                 <Grid container spacing={2} sx={{ mb: 2 }}>
-                    <Grid size={2}>
-                        <Select defaultValue="All Statuses" fullWidth style={{ borderRadius: '12px', height: '50px' }} label="Filter by Status">
-                            <MenuItem value="All Statuses">All Statuses</MenuItem>
-                            <MenuItem value="In Progress">In Progress</MenuItem>
-                            <MenuItem value="Completed">Completed</MenuItem>
-                        </Select>
+                    <Grid  >
+                        <FormControl sx={{ minWidth: 230 }}>
+                            <InputLabel>Status</InputLabel>
+                            <Select
+                                value={status}
+                                label="Status"
+                                style={{ borderRadius: '12px', height: '50px' }}
+                                onChange={(e) => setStatus(e.target.value)}
+                            >
+                                <MenuItem value="In Progress">In Progress</MenuItem>
+                                <MenuItem value="Completed">Completed</MenuItem>
+                            </Select>
+                        </FormControl>
+
                     </Grid>
-                    <Grid size={2}>
-                        <Select defaultValue="All Time" fullWidth style={{ borderRadius: '12px', height: '50px' }}>
-                            <MenuItem value="All Time">All Time</MenuItem>
-                            <MenuItem value="Last 30 Days">Last 30 Days</MenuItem>
-                        </Select>
+                    <Grid  >
+                        <FormControl sx={{ minWidth: 230 }}>
+                            <InputLabel>All Time</InputLabel>
+                            <Select
+                                value={allTime}
+                                label="All Time"
+                                style={{ borderRadius: '12px', height: '50px' }}
+                                onChange={(e) => setAllTime(e.target.value)}
+                            >
+                                <MenuItem value="All Time">All Time</MenuItem>
+                                <MenuItem value="Last 30 Days">Last 30 Days</MenuItem>
+                            </Select>
+                        </FormControl>
+
                     </Grid>
-                    <Grid size={2}>
-                        <Select defaultValue="Most Recent" fullWidth style={{ borderRadius: '12px', height: '50px' }}>
-                            <MenuItem value="Most Recent">Most Recent</MenuItem>
-                            <MenuItem value="Oldest">Oldest</MenuItem>
-                        </Select>
+                    <Grid  >
+                        <FormControl sx={{ minWidth: 230 }}>
+                            <InputLabel>Most Recent</InputLabel>
+                            <Select
+                                value={sortOrder}
+                                label="Most Recent"
+                                style={{ borderRadius: '12px', height: '50px' }}
+                                onChange={(e) => setSortOrder(e.target.value)}
+                            >
+                                <MenuItem value="Most Recent">Most Recent</MenuItem>
+                                <MenuItem value="Oldest">Oldest</MenuItem>
+                            </Select>
+                        </FormControl>
+
                     </Grid>
                 </Grid>
 

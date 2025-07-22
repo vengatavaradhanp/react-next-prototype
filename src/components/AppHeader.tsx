@@ -1,18 +1,24 @@
 import React, { useState } from 'react'
 import {
     AppBar,
+    Avatar,
     Box,
     CssBaseline,
+    Divider,
     IconButton,
     InputBase,
     Toolbar,
+    Typography,
     useTheme,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import NotificationsIcon from '@mui/icons-material/Notifications'; // Add this import
+import { NotificationsNoneOutlined } from '@mui/icons-material';
 
-const drawerWidth = 260;
+
+const drawerWidth = 280;
 
 export default function AppHeader() {
     const [open, setOpen] = useState(true);
@@ -102,6 +108,47 @@ export default function AppHeader() {
                                 },
                             }}
                         />
+                    </Box>
+                    {/* Add this Box to push the notification icon to the right */}
+                    <Box sx={{ flexGrow: 1 }} />
+                    {/* Add the notification icon */}
+                    <IconButton
+                        color="inherit"
+                        aria-label="notifications"
+                        sx={{
+                            marginLeft: 2
+
+                        }}
+                    >
+                        <NotificationsNoneOutlined sx={{ fontSize: 28 }} />
+                    </IconButton>
+                    <IconButton
+                        color="inherit"
+                        aria-label="profile"
+                        sx={{
+                            marginLeft: 2,
+                            width: 40,
+                            height: 40,
+                            backgroundColor: '#fff',
+                            '&:hover': {
+                                backgroundColor: alpha(theme.palette.common.black, 0),
+                            }
+                        }}
+                    >
+                        <Avatar
+                            alt="Profile Picture"
+                            src="https://randomuser.me/api/portraits/women/26.jpg"  // Replace with actual path
+                            sx={{ width: 45, height: 45, borderRadius: '8px' }}  // Adjust size as needed
+                            variant='square'
+                        />
+                    </IconButton>
+                    <Box sx={{ marginLeft: 2, paddingRight: 2, display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="body1" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                            Jane Morgan
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'text.primary' }}>
+                            Admin
+                        </Typography>
                     </Box>
                 </Toolbar>
             </AppBar>

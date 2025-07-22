@@ -2,39 +2,27 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
-  const isPublicPath =
-    path === '/' ||
-    path === '/auth/signin' ||
-    path === '/auth/forgot-password' ||
-    path === '/auth/signup' ||
-    path === '/auth/create-password' ||
-    path === '/auth/otp-verification';
+    const path = request.nextUrl.pathname;
+    const isAuthPath = path.startsWith('/auth');
 
-  const token = request.cookies.get('token')?.value || '';
+    const token = request.cookies.get('token')?.value || '';
 
+    // Redirect to signin if accessing a protected route without a token
+    if (!isAuthPath && !token) {
+        return NextResponse.redirect(new URL('/auth/signin', request.url));
+    }
 
-  // if (path === '/') {
-  //   return NextResponse.redirect(new URL('/home', request.nextUrl));
-  // }
+    // Redirect to dashboard if accessing auth routes with a token
+    if (isAuthPath && token) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
 
-  // if (isPublicPath && token) {
-  //   return NextResponse.redirect(new URL('/dashboard', request.nextUrl));
-  // }
-
-  // if (!isPublicPath && !token) {
-  //   return NextResponse.redirect(new URL('/auth/signin', request.nextUrl));
-  // }
+    // Redirect root to signin page
+    if (path === '/') {
+        return NextResponse.redirect(new URL('/auth/signin', request.url));
+    }
 }
 
 export const config = {
-  matcher: [
-    '/',
-    '/dashboard',
-    '/auth/signin',
-    '/auth/forgot-password',
-    '/auth/signup',
-    '/auth/create-password',
-    '/auth/otp-verification',
-  ],
+    matcher: ['/', '/auth/:path*', '/dashboard', '/assessment/:path*', '/security/:path*', '/setting/:path*', '/help/:path*'],
 };

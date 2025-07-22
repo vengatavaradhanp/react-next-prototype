@@ -168,22 +168,22 @@ export default function QuestionsPage() {
                     </Grid>
                     <Grid size={2} textAlign={'right'}>
                         <Button
-                            variant="contained"
+                            variant="outlined"
                             onClick={handleAddQuestion}
                             sx={{
-                                background: 'linear-gradient(90deg, #408bff 0%, #3a7de6 100%)',
+                                // background: 'linear-gradient(90deg, #408bff 0%, #3a7de6 100%)',
                                 textTransform: 'none',
                                 letterSpacing: '0.5px',
                                 fontWeight: 500,
                                 fontFamily: 'var(--font-inter), sans-serif',
                                 borderRadius: '4px',
                                 padding: '8px 24px',
-                                boxShadow: '0 2px 8px rgba(64, 139, 255, 0.25)',
-                                border: 'none',
-                                '&:hover': {
-                                    background: 'linear-gradient(90deg, #3a7de6 0%, #3670cc 100%)',
-                                    boxShadow: '0 4px 12px rgba(64, 139, 255, 0.3)',
-                                }
+                                // boxShadow: '0 2px 8px rgba(64, 139, 255, 0.25)',
+                                // border: 'none',
+                                // '&:hover': {
+                                //     background: 'linear-gradient(90deg, #3a7de6 0%, #3670cc 100%)',
+                                //     boxShadow: '0 4px 12px rgba(64, 139, 255, 0.3)',
+                                // }
                             }}
                         >
                             <AddOutlined /> &nbsp; New Question

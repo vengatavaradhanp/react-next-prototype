@@ -22,7 +22,7 @@ import { ArrowBack, HelpOutline, MenuOpen } from "@mui/icons-material";
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 
-const drawerWidth = 260;
+const drawerWidth = 280;
 
 const navigationItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
@@ -68,15 +68,15 @@ export default function AppDrawer() {
                 }}
             >
                 {open && (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 600 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 600, color: theme.palette.primary.main }}>
                             Medical Assessment
                         </Typography>
                     </Box>
                 )}
-                <IconButton onClick={handleDrawerToggle}>
+                {/* <IconButton onClick={handleDrawerToggle}>
                     {open ? <ArrowBack /> : <MenuOpen />}
-                </IconButton>
+                </IconButton> */}
             </Toolbar>
             <Divider />
             <List sx={{ px: 2, py: 1 }}>
@@ -123,7 +123,7 @@ export default function AppDrawer() {
                 textAlign: 'center',
                 borderTop: `1px solid ${theme.palette.divider}`,
             }}>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color="textPrimary">
                     © 2023 Medical Assessment
                 </Typography>
             </Box>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useRef } from 'react';
@@ -15,6 +16,7 @@ import { ArrowUpward, ArrowDownward, Edit, Delete, AddOutlined } from '@mui/icon
 import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/PageHeader';
 import { SectionDialog, SectionDialogRef } from '@/components/SectionDialog';
+import { useSelector } from 'react-redux';
 
 
 const categories = [
@@ -52,6 +54,9 @@ export default function NewAssessment(props: {
     const [sections, setSections] = useState<Section[]>([]);
     const [sectionCounter, setSectionCounter] = useState(1);
     const sectionDialogRef = useRef<SectionDialogRef>(null);
+    const storeSelector = useSelector((state: any) => state);
+
+    console.log('storeSelector', storeSelector)
 
     const validateForm = () => {
         let isValid = true;
@@ -187,6 +192,7 @@ export default function NewAssessment(props: {
                     Assessment Details
                 </Typography>
 
+
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
                         <Grid size={6}>
@@ -198,6 +204,7 @@ export default function NewAssessment(props: {
                                 onChange={handleChange}
                                 error={!!errors.title}
                                 helperText={errors.title}
+                                placeholder="Enter the title of the assessment"
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '8px'
@@ -215,6 +222,7 @@ export default function NewAssessment(props: {
                                 onChange={handleChange}
                                 error={!!errors.category}
                                 helperText={errors.category}
+                                placeholder="Select a category"
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '8px'
@@ -239,6 +247,7 @@ export default function NewAssessment(props: {
                                 onChange={handleChange}
                                 error={!!errors.description}
                                 helperText={errors.description}
+                                placeholder="Provide a detailed description of the assessment"
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '8px'
@@ -246,7 +255,6 @@ export default function NewAssessment(props: {
                                 }}
                             />
                         </Grid>
-
                     </Grid>
                 </form>
             </Paper>
@@ -282,21 +290,21 @@ export default function NewAssessment(props: {
                     <Grid size={2} textAlign={'right'}>
                         <Button
                             onClick={handleAddSection}
-                            variant="contained"
+                            variant="outlined"
                             sx={{
-                                background: 'linear-gradient(90deg, #408bff 0%, #3a7de6 100%)',
+                                // background: 'linear-gradient(90deg, #408bff 0%, #3a7de6 100%)',
                                 textTransform: 'none',
                                 letterSpacing: '0.5px',
                                 fontWeight: 500,
                                 fontFamily: 'var(--font-inter), sans-serif',
                                 borderRadius: '4px',
                                 padding: '8px 24px',
-                                boxShadow: '0 2px 8px rgba(64, 139, 255, 0.25)',
-                                border: 'none',
-                                '&:hover': {
-                                    background: 'linear-gradient(90deg, #3a7de6 0%, #3670cc 100%)',
-                                    boxShadow: '0 4px 12px rgba(64, 139, 255, 0.3)',
-                                }
+                                // boxShadow: '0 2px 8px rgba(64, 139, 255, 0.25)',
+                                // border: 'none',
+                                // '&:hover': {
+                                //     background: 'linear-gradient(90deg, #3a7de6 0%, #3670cc 100%)',
+                                //     boxShadow: '0 4px 12px rgba(64, 139, 255, 0.3)',
+                                // }
                             }}
                         >
                             <AddOutlined /> &nbsp; New Section
