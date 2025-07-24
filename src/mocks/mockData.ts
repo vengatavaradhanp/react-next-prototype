@@ -1,81 +1,83 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export interface AssessmentRecord {
     id: string;
-    date: string;
-    status: 'In Progress' | 'Completed' | 'Pending';
+    title: string;
+    category: string;
+    description: string;
+    createdBy: string;
+    createdDate: string;
+    status: string;
+    priority: string;
     completedBy: string;
-    actions: string[];
-    patientName: string;
-    patientId: string;
-    assessmentType: string;
-    department: string;
-    priority: 'Low' | 'Medium' | 'High';
     lastModified: string;
+    sections: any
 }
 
 export const mockAssessments: AssessmentRecord[] = [
     {
         id: 'ASS001',
-        patientId: 'P001',
-        patientName: 'John Smith',
-        date: 'Jun 20, 2025',
+        title: 'Annual Health Check',
+        category: 'General Health',
+        description: 'Annual health check for all employees',
+        createdBy: 'Dr. John Doe',
+        createdDate: '2025-06-01',
         status: 'In Progress',
         priority: 'High',
         completedBy: '',
-        actions: ['edit'],
-        assessmentType: 'Annual Health Check',
-        department: 'General Medicine',
-        lastModified: 'Jun 20, 2025'
+        lastModified: 'Jun 01, 2025',
+        sections: []
     },
     {
         id: 'ASS002',
-        patientId: 'P002',
-        patientName: 'Emma Wilson',
-        date: 'Apr 01, 2025',
+        title: 'Cardiac Evaluation',
+        category: 'Cardiac',
+        description: 'Comprehensive cardiac evaluation for high-risk patients',
+        createdBy: 'Dr. Jane Smith',
+        createdDate: '2025-05-15',
         status: 'Completed',
         priority: 'Medium',
         completedBy: 'Dr. Sarah Johnson',
-        actions: ['view', 'pdf'],
-        assessmentType: 'Cardiac Evaluation',
-        department: 'Cardiology',
-        lastModified: 'Apr 01, 2025'
+        lastModified: 'May 15, 2025',
+        sections: []
     },
     {
         id: 'ASS003',
-        patientId: 'P003',
-        patientName: 'Robert Davis',
-        date: 'May 15, 2025',
+        title: 'Diabetes Screening',
+        category: 'Respiratory',
+        description: 'Regular diabetes screening for early detection',
+        createdBy: 'Dr. Robert White',
+        createdDate: '2025-05-01',
         status: 'Completed',
         priority: 'Medium',
         completedBy: 'Dr. Michael Chen',
-        actions: ['view', 'pdf'],
-        assessmentType: 'Diabetes Screening',
-        department: 'Endocrinology',
-        lastModified: 'May 15, 2025'
+        lastModified: 'May 01, 2025',
+        sections: []
     },
     {
         id: 'ASS004',
-        patientId: 'P004',
-        patientName: 'Alice Brown',
-        date: 'Jun 18, 2025',
+        title: 'Physical Therapy Assessment',
+        category: 'Neurological',
+        description: 'Initial assessment for physical therapy patients',
+        createdBy: 'Dr. Emily Green',
+        createdDate: '2025-04-20',
         status: 'In Progress',
         priority: 'Low',
         completedBy: '',
-        actions: ['edit'],
-        assessmentType: 'Physical Therapy Assessment',
-        department: 'Physiotherapy',
-        lastModified: 'Jun 18, 2025'
+        lastModified: 'Apr 20, 2025',
+        sections: []
     },
     {
         id: 'ASS005',
-        patientId: 'P005',
-        patientName: 'David Miller',
-        date: 'Jun 10, 2025',
+        title: 'Mental Health Evaluation',
+        category: 'Orthopedic',
+        description: 'Mental health evaluation for new patients',
+        createdBy: 'Dr. David Blue',
+        createdDate: '2025-04-10',
         status: 'Completed',
         priority: 'High',
         completedBy: 'Dr. Emily White',
-        actions: ['view', 'pdf'],
-        assessmentType: 'Mental Health Evaluation',
-        department: 'Psychiatry',
-        lastModified: 'Jun 10, 2025'
+        lastModified: 'Apr 10, 2025',
+        sections: []
     }
 ];

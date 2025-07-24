@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -10,13 +10,16 @@ import {
     Button,
     MenuItem,
     Grid,
-    IconButton
+    IconButton,
+    Snackbar,
+    Alert
 } from '@mui/material';
 import { ArrowUpward, ArrowDownward, Edit, Delete, AddOutlined } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/PageHeader';
 import { SectionDialog, SectionDialogRef } from '@/components/SectionDialog';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { addAssessment, currentAssessment, updateAssessment } from '@/store/assessmentSlice';
 
 
 const categories = [
@@ -33,6 +36,7 @@ interface Section {
     title: string;
     questionCount: number;
     order: number;
+    questions: any[];
 }
 
 export default function NewAssessment(props: {
@@ -54,9 +58,25 @@ export default function NewAssessment(props: {
     const [sections, setSections] = useState<Section[]>([]);
     const [sectionCounter, setSectionCounter] = useState(1);
     const sectionDialogRef = useRef<SectionDialogRef>(null);
-    const storeSelector = useSelector((state: any) => state);
+    const assessmentSelector = useSelector((state: any) => state.assessment);
+    const dispatch = useDispatch();
+    const [isAssessmentSaved, setIsAssessmentSaved] = useState(false);
 
-    console.log('storeSelector', storeSelector)
+    // State for snackbar
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState<any>('success');
+
+    console.log('assessmentSelector:', assessmentSelector);
+
+    useEffect(() => {
+        if (assessmentSelector.currentAssessment) {
+            setFormData(assessmentSelector.currentAssessment);
+            setSections(assessmentSelector.currentAssessment.sections);
+            setIsAssessmentSaved(true);
+            setSectionCounter(assessmentSelector.currentAssessment.sections.length + 1);
+        }
+    }, [assessmentSelector.currentAssessment]);
 
     const validateForm = () => {
         let isValid = true;
@@ -93,7 +113,39 @@ export default function NewAssessment(props: {
         if (validateForm()) {
             // Handle form submission
             console.log('Form submitted:', formData);
+            const data: any = {
+                id: `ASS00${assessmentSelector.
+                    assessmentList
+                    .length + 1}`,
+                title: formData.title,
+                category: formData.category,
+                description: formData.description,
+                createdBy: 'Dr. John Doe',
+                createdDate: new Date().toISOString(),
+                status: 'In Progress',
+                priority: 'High',
+                completedBy: '',
+                lastModified: new Date().toISOString(),
+                sections: sections.map(section => ({
+                    id: section.id,
+                    title: section.title,
+                    questionCount: section.questionCount,
+                    order: section.order + 1,
+                    questions: []
+                }))
+            }
+            dispatch(addAssessment(data));
+            dispatch(currentAssessment(data));
+            setSnackbarMessage('Assessment saved successfully');
+            setSnackbarSeverity('success');
+            setIsAssessmentSaved(true); // Set this to true after saving
+            setSnackbarOpen(true); // Open the snackbar
+            // router.push('/assessment');
         }
+    };
+
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -113,22 +165,40 @@ export default function NewAssessment(props: {
 
     // Modify handleAddSection to open dialog
     const handleAddSection = () => {
-        sectionDialogRef.current?.open();
+        if (isAssessmentSaved) {
+            sectionDialogRef.current?.open();
+        } else {
+            setSnackbarMessage('Please save the assessment first');
+            setSnackbarSeverity('warning');
+            setSnackbarOpen(true);
+        }
     };
 
     // Add handleSaveSection
     const handleSaveSection = (sectionData: { title: string; description: string }) => {
-        const newSection: Section = {
+        const newSection: any = {
             id: sectionCounter,
             title: sectionData.title,
             questionCount: 0,
-            order: sections.length
+            order: sections.length,
+            questions: []
         };
 
         setSections([...sections, newSection]);
+        const updatedAssessment = {
+            ...assessmentSelector.currentAssessment,
+            sections: [...assessmentSelector.currentAssessment.sections, newSection]
+        };
+
+        dispatch(updateAssessment(updatedAssessment));
+        dispatch(currentAssessment(updatedAssessment));
         setSectionCounter(prev => prev + 1);
+        setSnackbarMessage('Section created successfully!');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
     };
 
+    // Move section handlers
     // Move section handlers
     const handleMoveSection = (index: number, direction: 'up' | 'down') => {
         if ((direction === 'up' && index === 0) ||
@@ -139,16 +209,16 @@ export default function NewAssessment(props: {
         const newSections = [...sections];
         const swapIndex = direction === 'up' ? index - 1 : index + 1;
 
-        // Swap order values
-        const tempOrder = newSections[index].order;
-        newSections[index].order = newSections[swapIndex].order;
-        newSections[swapIndex].order = tempOrder;
-
         // Swap positions in array
-        [newSections[index], newSections[swapIndex]] =
-            [newSections[swapIndex], newSections[index]];
+        [newSections[index], newSections[swapIndex]] = [newSections[swapIndex], newSections[index]];
 
-        setSections(newSections);
+        // Update order property to match new array order
+        const reorderedSections = newSections.map((section, idx) => ({
+            ...section,
+            order: idx
+        }));
+
+        setSections(reorderedSections);
     };
 
     // Delete section handler
@@ -259,7 +329,6 @@ export default function NewAssessment(props: {
                 </form>
             </Paper>
 
-            {/* Section Block */}
 
             <Paper sx={{
                 p: 3,
@@ -363,7 +432,7 @@ export default function NewAssessment(props: {
                             textAlign="center"
                             fontFamily={'var(--font-inter), sans-serif'}
                         >
-                            {"Get started by clicking the \"New Section\" button above to create sections for your assessment."}
+                            Get started by clicking the &quot;New Section&quot; button above to create sections for your assessment.
                         </Typography>
                     </Box>
                 ) :
@@ -395,7 +464,7 @@ export default function NewAssessment(props: {
                                         <span style={{ fontWeight: 600, marginLeft: '20px' }}>
                                             {section.title}
                                         </span>
-                                        &nbsp;({section.questionCount} questions)
+                                        &nbsp;({section.questions?.length} questions)
                                     </Typography>
                                 </Grid>
                                 <Grid size={3}>
@@ -461,10 +530,22 @@ export default function NewAssessment(props: {
                     ))}
             </Paper>
 
+
             <SectionDialog
                 ref={sectionDialogRef}
                 onSave={handleSaveSection}
             />
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={5000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%', fontWeight: 600 }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

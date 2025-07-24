@@ -144,7 +144,7 @@ export default function AppHeader() {
                     </IconButton>
                     <Box sx={{ marginLeft: 2, paddingRight: 2, display: 'flex', flexDirection: 'column' }}>
                         <Typography variant="body1" sx={{ fontWeight: 600, color: 'text.primary' }}>
-                            Jane Morgan
+                            Jane Stacy
                         </Typography>
                         <Typography variant="caption" sx={{ color: 'text.primary' }}>
                             Admin

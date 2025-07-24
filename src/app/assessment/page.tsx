@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Typography, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Grid, InputLabel, FormControl } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { AddOutlined, Edit, RemoveRedEyeOutlined } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
-import { mockAssessments } from '@/mocks/mockData';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/store/store';
+import { currentAssessment, setAssessments } from '@/store/assessmentSlice';
 
 const statusStyles: any = {
     'In Progress': {
@@ -35,6 +37,34 @@ const Assessments = () => {
     const [allTime, setAllTime] = React.useState('');
     const [sortOrder, setSortOrder] = React.useState('');
     const router = useRouter();
+    const assessmentList = useSelector((state: RootState) => state.assessment.assessmentList);
+    const dispatch = useDispatch();
+
+    console.log('Assessment List:', assessmentList);
+
+    useEffect(() => {
+        dispatch(currentAssessment({
+            id: "ASS006",
+            title: '',
+            category: '',
+            description: '',
+            createdBy: '',
+            createdDate: '',
+            status: '',
+            priority: '',
+            completedBy: '',
+            lastModified: '',
+            sections: [],
+            date: ''
+        }));
+    }, [])
+
+    const handleEditAssessment = (data: any) => {
+        dispatch(currentAssessment(data));
+        router.push(`/assessment/form`);
+    }
+
+
     return (
         <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -128,23 +158,17 @@ const Assessments = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {mockAssessments.map((row, index) => (
+                            {assessmentList.map((row: any) => (
                                 <TableRow key={row.id}>
-                                    <TableCell>{row.date}</TableCell>
+                                    <TableCell>{new Date(row.createdDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
                                     <TableCell>
                                         <Box sx={statusStyles[row.status]}>{row.status}</Box>
                                     </TableCell>
-                                    <TableCell>{row.completedBy || '-'}</TableCell>
+                                    <TableCell>{row.completedBy || 'Admin'}</TableCell>
                                     <TableCell>
-                                        {row.actions.includes('edit') && (
-                                            <IconButton><Edit style={{ fontSize: '25px', color: '#408bff' }} /></IconButton>
-                                        )}
-                                        {row.actions.includes('view') && (
-                                            <IconButton><RemoveRedEyeOutlined style={{ fontSize: '25px', color: '#408bff' }} /></IconButton>
-                                        )}
-                                        {row.actions.includes('pdf') && (
-                                            <IconButton><PictureAsPdfIcon style={{ fontSize: '25px', color: '#18cf43ff' }} /></IconButton>
-                                        )}
+                                        {row.status === 'In Progress' && <IconButton onClick={() => handleEditAssessment(row)}><Edit style={{ fontSize: '25px', color: '#408bff' }} /></IconButton>}
+                                        {row.status === 'Completed' && <IconButton><RemoveRedEyeOutlined style={{ fontSize: '25px', color: '#408bff' }} /></IconButton>}
+                                        {row.status === 'Completed' && <IconButton><PictureAsPdfIcon style={{ fontSize: '25px', color: '#18cf43ff' }} /></IconButton>}
                                     </TableCell>
                                 </TableRow>
                             ))}

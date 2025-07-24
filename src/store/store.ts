@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { errorMiddleware } from './errorMiddleware';
 import authReducer from './authSlice';
-import assessmentReducer from './assessmentSlice';
+import assessmentReducer from './assessmentSlice'; // Import the assessment reducer
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
-        assessment: assessmentReducer,
+        assessment: assessmentReducer, // Add the assessment reducer to the store
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(errorMiddleware),

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,10 +10,14 @@ import {
     Button,
     Grid,
     IconButton,
-    TextField
+    TextField,
+    Snackbar,
+    Alert
 } from '@mui/material';
 import { PageHeader } from '@/components/PageHeader';
 import { ArrowUpward, ArrowDownward, Edit, Delete, AddOutlined } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { currentAssessment } from '@/store/assessmentSlice';
 
 interface Question {
     id: number;
@@ -38,26 +43,23 @@ export default function QuestionsPage() {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [questionCounter, setQuestionCounter] = useState(1);
     const sectionId = params.id;
+    const currentAssessmentSelector = useSelector((state: any) => state.assessment.currentAssessment);
+    const storeSelector = useSelector((state) => state)
+    const dispatch = useDispatch();
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    console.log('########', storeSelector)
 
     useEffect(() => {
-        // You can fetch section details here using the sectionId
-        setSectionTitle(`Section ${sectionId}`);
-    }, [sectionId]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-        // Clear error when user starts typing
-        if (errors[name as keyof typeof errors]) {
-            setErrors(prev => ({
-                ...prev,
-                [name]: ''
-            }));
+        if (currentAssessmentSelector?.sections) {
+            const currentSection = currentAssessmentSelector.sections.find((section: any) => section.id === Number(sectionId));
+            if (currentSection) {
+                setSectionTitle(currentSection.title);
+                setQuestions(currentSection.questions);
+            }
         }
-    };
+
+    }, [currentAssessmentSelector?.sections, sectionId]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -115,33 +117,82 @@ export default function QuestionsPage() {
         setQuestions(newQuestions);
     };
 
-    const handleEditQuestion = (id: number) => {
-        router.push(`/assessment/form/${sectionId}/section/question`);
+    const handleEditQuestion = (questionId: number) => {
+        router.push(`/assessment/form/section/${sectionId}/question`);
     };
 
-    const handleDeleteQuestion = (id: number) => {
-        const newQuestions = questions.filter(question => question.id !== id)
-            .map((question, index) => ({
-                ...question,
-                order: index
-            }));
+    const handleDeleteQuestion = (questionId: number) => {
+        const updatedQuestions = questions.filter(question => question.id !== questionId);
+        setQuestions(updatedQuestions);
+        localStorage.setItem(`section_${sectionId}_questions`, JSON.stringify(updatedQuestions));
+    };
+
+    // Move section handlers
+    const handleMoveQuestions = (index: number, direction: 'up' | 'down') => {
+        if ((direction === 'up' && index === 0) ||
+            (direction === 'down' && index === questions.length - 1)) {
+            return;
+        }
+
+        const newQuestions = [...questions];
+        const swapIndex = direction === 'up' ? index - 1 : index + 1;
+
+        // Swap order values
+        const tempOrder = newQuestions[index].order;
+        newQuestions[index].order = newQuestions[swapIndex].order;
+        newQuestions[swapIndex].order = tempOrder;
+
+        // Swap positions in array
+        [newQuestions[index], newQuestions[swapIndex]] =
+            [newQuestions[swapIndex], newQuestions[index]];
+
         setQuestions(newQuestions);
+    };
+
+    const handleSaveSection = () => {
+
+        // Find the current section
+        const currentSection = currentAssessmentSelector.sections.find(
+            (section: any) => section.id === Number(sectionId)
+        );
+        // Create updated section object
+        const updatedSection = {
+            ...currentSection
+        };
+
+        // Create updated sections array
+        const updatedSections = currentAssessmentSelector.sections.map((section: any) =>
+            section.id === Number(sectionId) ? updatedSection : section
+        );
+
+        // Create updated assessment object
+        const updatedAssessment = {
+            ...currentAssessmentSelector,
+            sections: updatedSections,
+        };
+
+        // Dispatch to update Redux store
+        dispatch(currentAssessment(updatedAssessment));
+        setSnackbarMessage('Section saved successfully!');
+        setSnackbarOpen(true);
+        router.push(`/assessment/form`);
+    };
+
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
     };
 
     return (
         <Box>
             <PageHeader
-                title={` ${sectionTitle} - Questions`}
+                title={`${sectionTitle} - Questions`}
                 subtitle="Add and manage questions for this section"
                 showBackButton={true}
                 showActionButton={true}
                 actionButtonText="Save Section"
-                onActionClick={() => router.back()}
+                onActionClick={handleSaveSection}
             />
 
-
-
-            {/* Question Block */}
             <Paper sx={{
                 p: 3,
                 borderRadius: '10px',
@@ -163,13 +214,13 @@ export default function QuestionsPage() {
                             color="#6c757d"
                             fontFamily={'var(--font-inter), sans-serif'}
                         >
-                            Organize your questions into logical sections. Each section can have conditional logic.
+                            Manage the questions for this section. You can add, edit, move, or delete questions as needed.
                         </Typography>
                     </Grid>
                     <Grid size={2} textAlign={'right'}>
                         <Button
-                            variant="outlined"
                             onClick={handleAddQuestion}
+                            variant="outlined"
                             sx={{
                                 // background: 'linear-gradient(90deg, #408bff 0%, #3a7de6 100%)',
                                 textTransform: 'none',
@@ -188,6 +239,7 @@ export default function QuestionsPage() {
                         >
                             <AddOutlined /> &nbsp; New Question
                         </Button>
+
                     </Grid>
                 </Grid>
 
@@ -198,55 +250,19 @@ export default function QuestionsPage() {
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            py: 8,
-                            px: 3,
+                            py: 12,
+                            px: 5,
                             border: '1px dashed #eff0f1ff',
                             borderRadius: '8px',
                             mt: 3,
                             backgroundColor: '#fafafa'
                         }}
                     >
-                        <Box
-                            sx={{
-                                width: '48px',
-                                height: '48px',
-                                borderRadius: '50%',
-                                backgroundColor: '#f5f5f5ff',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                mb: 2
-                            }}
-                        >
-                            <Typography
-                                variant="h6"
-                                color="#6c757d"
-                                fontWeight={600}
-                            >
-                                0
-                            </Typography>
-                        </Box>
-                        <Typography
-                            variant="h6"
-                            color="#6c757d"
-                            fontWeight={600}
-                            fontFamily={'var(--font-inter), sans-serif'}
-                            gutterBottom
-                        >
-                            No Questions Added
-                        </Typography>
-                        <Typography
-                            variant="body2"
-                            color="#6c757d"
-                            textAlign="center"
-                            fontFamily={'var(--font-inter), sans-serif'}
-                        >
-                            {"No questions added yet. Click \"New Question\" to get started."}
-                        </Typography>
+                        <Typography variant="body1">{`No questions added yet. Click "Add Question" to get started.`}</Typography>
                     </Box>
-
                 ) : (
-                    questions.map((question, index) => (
+
+                    questions.map((question: any, index) => (
                         <Box
                             key={question.id}
                             style={{
@@ -274,6 +290,7 @@ export default function QuestionsPage() {
                                         <span style={{ fontWeight: 600, marginLeft: '20px' }}>
                                             {question.title}
                                         </span>
+                                        {/* &nbsp;({section.questionCount} questions) */}
                                     </Typography>
                                 </Grid>
                                 <Grid size={3}>
@@ -281,7 +298,7 @@ export default function QuestionsPage() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => handleMoveQuestion(index, 'up')}
+                                            onClick={() => handleMoveQuestions(index, 'up')}
                                             disabled={index === 0}
                                             style={{
                                                 border: '1px solid #e0e0e0',
@@ -295,7 +312,7 @@ export default function QuestionsPage() {
                                         <IconButton
                                             size="small"
                                             color="primary"
-                                            onClick={() => handleMoveQuestion(index, 'down')}
+                                            onClick={() => handleMoveQuestions(index, 'down')}
                                             disabled={index === questions.length - 1}
                                             style={{
                                                 border: '1px solid #e0e0e0',
@@ -337,8 +354,22 @@ export default function QuestionsPage() {
                             </Grid>
                         </Box>
                     ))
+
+
                 )}
             </Paper>
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={5000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%', fontWeight: 600 }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
         </Box>
     );
 }
